@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  database:
+    image: mysql
+    container_name: database
+    environment:
+      - MYSQL_DATABASE=work_timer
+      - MYSQL_ROOT_PASSWORD=4adf05ec
+    ports:
+      - 3306:3306
+    volumes:
+      - db:/var/lib/mysql
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+  
+  server:
+    build: ./server
+    container_name: server
+    ports:
+      - 3333:3333
+      - 9229:9229
+    volumes: 
+      - ./server:/usr/app
+    depends_on:
+      - database
+  
+  client:
+    build: ./client
+    container_name: client
+    ports: 
+      - 5173:5173
+    volumes: 
+      - ./client:/usr/app
+    depends_on:
+      - server
+
+volumes:
+  db:
+    driver: local

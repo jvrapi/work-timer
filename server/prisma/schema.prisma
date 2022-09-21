@@ -1,0 +1,22 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Schedules {
+  id              String    @id @default(uuid())
+  createdAt       DateTime  @default(now()) @map("created_at")
+  startedAt       DateTime  @map("started_at") @db.Time()
+  finishedAt      DateTime? @map("finished_at") @db.Time()
+  startedLunchAt  DateTime? @map("started_lunch_at") @db.Time()
+  finishedLunchAt DateTime? @map("finished_lunch_at") @db.Time()
+
+  @@map("schedules")
+}
