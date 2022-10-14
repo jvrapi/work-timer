@@ -1,8 +1,8 @@
 import SocketIO from 'socket.io'
-import { registerScheduleHandlers } from './modules/schedule/socketIo'
+import { registerWorkTimesHandlers } from './modules/workTimes/socketIo'
 
 const onConnection = (socket:  SocketIO.Socket) => {
-  registerScheduleHandlers(socket)
+  registerWorkTimesHandlers(socket)
 }
 
 

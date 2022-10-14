@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x", "debian-openssl-1.1.x"]
 }
 
 datasource db {
@@ -10,13 +11,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Schedules {
+model WorkTimes {
   id              String    @id @default(uuid())
-  createdAt       DateTime  @default(now()) @map("created_at")
-  startedAt       DateTime  @map("started_at") @db.Time()
-  finishedAt      DateTime? @map("finished_at") @db.Time()
-  startedLunchAt  DateTime? @map("started_lunch_at") @db.Time()
-  finishedLunchAt DateTime? @map("finished_lunch_at") @db.Time()
+  startedAt       DateTime  @map("started_at")
+  finishedAt      DateTime? @map("finished_at")
+  startedLunchAt  DateTime? @map("started_lunch_at")
+  finishedLunchAt DateTime? @map("finished_lunch_at")
 
-  @@map("schedules")
+  @@map("work_times")
 }
