@@ -1,5 +1,5 @@
-import { DateProvider } from "../../../../providers/DateProvider"
-import { DayJsDateProvider } from "../../../../providers/dayJs/DayJsDateProvider"
+import { DateProvider } from "../../providers/DateProvider"
+import { DayJsDateProvider } from "../../providers/dayJs/DayJsDateProvider"
 import { TestWorkTimesRepository } from "../../repositories/test/TestWorkTimesRepository"
 import { InitWorkTimeService } from "./InitWorkTimeService"
 

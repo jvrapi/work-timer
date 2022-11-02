@@ -1,4 +1,4 @@
-import { DateProvider } from "../../../../providers/DateProvider"
+import { DateProvider } from "../../providers/DateProvider"
 import { WorkTimesRepository } from "../../repositories/WorkTimesRepository"
 
 

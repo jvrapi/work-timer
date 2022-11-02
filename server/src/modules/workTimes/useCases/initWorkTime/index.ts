@@ -1,5 +1,5 @@
 import SocketIO from 'socket.io'
-import { DayJsDateProvider } from '../../../../providers/dayJs/DayJsDateProvider'
+import { DayJsDateProvider } from '../../providers/dayJs/DayJsDateProvider'
 import { PrismaWorkTimesRepository } from '../../repositories/prisma/PrismaWorkTimesRepository'
 import { InitWorkTimeController } from './InitWorkTimeController'
 import { InitWorkTimeService } from './InitWorkTimeService'

@@ -22,5 +22,9 @@ export class PrismaWorkTimesRepository implements WorkTimesRepository{
     )
   }
 
+  listAll(): Promise<WorkTime[]> {
+    return prisma.workTimes.findMany()
+  }
+
 
 }

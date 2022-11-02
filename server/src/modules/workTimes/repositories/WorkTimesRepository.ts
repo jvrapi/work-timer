@@ -15,6 +15,7 @@ export type WorkTime = WorkTimeInitiated & {
 export interface WorkTimesRepository{
   initWorkTime(data: InitWorkTime): Promise<WorkTimeInitiated>
   getByDate(date: string): Promise<WorkTime[]>
+  listAll(): Promise<WorkTime[]>
 }
 
 
