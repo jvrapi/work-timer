@@ -12,11 +12,9 @@ datasource db {
 }
 
 model WorkTimes {
-  id              String    @id @default(uuid())
-  startedAt       DateTime  @map("started_at")
-  finishedAt      DateTime? @map("finished_at")
-  startedLunchAt  DateTime? @map("started_lunch_at")
-  finishedLunchAt DateTime? @map("finished_lunch_at")
+  id         String    @id @default(uuid())
+  startedAt  DateTime  @map("started_at")
+  finishedAt DateTime? @map("finished_at")
 
   @@map("work_times")
 }

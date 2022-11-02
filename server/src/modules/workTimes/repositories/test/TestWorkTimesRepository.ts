@@ -1,3 +1,4 @@
 export const TestWorkTimesRepository = {
-  initWorkTime: jest.fn()
+  initWorkTime: jest.fn(),
+  getByDate: jest.fn()
 }
