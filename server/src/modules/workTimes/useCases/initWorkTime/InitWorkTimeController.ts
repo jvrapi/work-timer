@@ -8,20 +8,20 @@ interface InitWorkTimeProps {
 class InitWorkTimeController {
 
   constructor(
-    private createScheduleService: InitWorkTimeService,
+    private createWorkTimerService: InitWorkTimeService,
     private socket:  SocketIO.Socket
 
   ){
   }
 
   async handle(){
-    this.socket.on("createSchedule", async ({milliseconds}: InitWorkTimeProps) => {
+    this.socket.on("createWorkTimer", async ({milliseconds}: InitWorkTimeProps) => {
 
-      const scheduleCreate = await this.createScheduleService.execute(
+      const workTimerCreated = await this.createWorkTimerService.execute(
         milliseconds
       )
 
-      this.socket.emit("scheduleCreated", scheduleCreate)
+      this.socket.emit("workTimerCreated", workTimerCreated)
    })
   }
 
