@@ -26,25 +26,6 @@ export function SchedulesRegister() {
   const [timerInitiated, setTimerInitiated] = useState(false);
   const [workTimeList, setWorkTimeList] = useState<WorkTimeList[]>([]);
 
-  const data = [
-    {
-      date: '12/09/2022',
-      started_at: '08:00',
-      finished_at: '18:00',
-      started_lunch_at: '12:00',
-      finished_lunch_at: '13:00',
-      worked_time: '8 horas',
-    },
-    {
-      date: '13/09/2022',
-      started_at: '08:00',
-      finished_at: '18:00',
-      started_lunch_at: '12:00',
-      finished_lunch_at: '13:00',
-      worked_time: '8 horas',
-    },
-  ];
-
   useEffect(() => {
     getWorkTimers();
   }, []);
