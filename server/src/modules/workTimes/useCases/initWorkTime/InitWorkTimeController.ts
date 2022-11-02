@@ -15,13 +15,13 @@ class InitWorkTimeController {
   }
 
   async handle(){
-    this.socket.on("createWorkTimer", async ({milliseconds}: InitWorkTimeProps) => {
+    this.socket.on("createWorkTime", async ({milliseconds}: InitWorkTimeProps) => {
 
       const workTimerCreated = await this.createWorkTimerService.execute(
         milliseconds
       )
 
-      this.socket.emit("workTimerCreated", workTimerCreated)
+      this.socket.emit("workTimeCreated", workTimerCreated)
    })
   }
 
