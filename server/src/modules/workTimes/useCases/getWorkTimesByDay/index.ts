@@ -7,7 +7,7 @@ const getWorkTimesListByDay = async (socket:  SocketIO.Socket) => {
   const repository = new PrismaWorkTimesRepository()
   const service = new GetWorkTimesByDayService(repository)
   const controller = new GetWorkTimesByDayController(service, socket)
-
+  return controller.handle()
 }
 
 export { getWorkTimesListByDay }

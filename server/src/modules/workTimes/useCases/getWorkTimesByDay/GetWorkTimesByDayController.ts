@@ -21,7 +21,9 @@ class GetWorkTimesByDayController {
         date
       )
 
-      this.socket.emit("getWorkTimesListByDay", scheduleCreate)
+      console.log(date)
+
+      this.socket.emit("WorkTimesListByDay", scheduleCreate)
    })
   }
 

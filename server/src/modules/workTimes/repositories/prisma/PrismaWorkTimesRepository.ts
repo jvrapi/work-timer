@@ -4,11 +4,9 @@ import { InitWorkTime, WorkTime, WorkTimeInitiated, WorkTimesRepository } from "
 
 export class PrismaWorkTimesRepository implements WorkTimesRepository{
   getByDate(date: string): Promise<WorkTime[]> {
-    return prisma.workTimes.findMany({
-      where: {
-        startedAt: date
-      },
-    })
+    const dateFormatted = `%${date}%`
+
+    return prisma.$queryRaw`SELECT * FROM work_times WHERE started_at LIKE ${dateFormatted}`
   }
 
   initWorkTime({startedAt}: InitWorkTime): Promise<WorkTimeInitiated> {
