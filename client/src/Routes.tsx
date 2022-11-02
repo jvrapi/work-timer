@@ -2,7 +2,7 @@ import { Route, Routes as DomRoutes } from 'react-router-dom';
 
 import { Home } from './pages/home';
 import { NotFound } from './pages/not-found';
-import { SchedulesRegister } from './pages/schedules-register';
+import { SchedulesRegister } from './pages/work-times';
 
 export function Routes() {
   return (
