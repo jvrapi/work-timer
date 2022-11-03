@@ -1,7 +1,7 @@
 import { StopCircle, Timer } from 'phosphor-react';
 import { useEffect, useState } from 'react';
 
-import { createWorkTime, getWorkTimesList, WorkTime } from '../../api';
+import { createWorkTime, finishWorkTime, getWorkTimesList, WorkTime } from '../../api';
 import { Button } from '../../components/Button';
 import { getDate, getDifferenceBetweenDates, getTime } from '../../utils/dayjs';
 
@@ -28,7 +28,13 @@ export function SchedulesRegister() {
 
   useEffect(() => {
     getWorkTimers();
+    verifyStorageStatus();
   }, []);
+
+  function verifyStorageStatus() {
+    const timerInitiated = localStorage.getItem('timerInitiated');
+    setTimerInitiated(timerInitiated === 'true');
+  }
 
   async function getWorkTimers() {
     const workTimesList = await getWorkTimesList();
@@ -91,11 +97,19 @@ export function SchedulesRegister() {
   }
 
   async function initWorkTime() {
-    setTimerInitiated(!timerInitiated);
-
     const message = await createWorkTime();
-    console.log(message);
     getWorkTimers();
+    setTimerInitiated(!timerInitiated);
+    localStorage.setItem('timerInitiated', String(!timerInitiated));
+    console.log(message);
+  }
+
+  async function finishWork() {
+    const message = await finishWorkTime();
+    getWorkTimers();
+    setTimerInitiated(!timerInitiated);
+    localStorage.setItem('timerInitiated', String(!timerInitiated));
+    console.log(message);
   }
 
   return (
@@ -103,7 +117,7 @@ export function SchedulesRegister() {
       <div className="self-end flex">
         <div className="mr-2">
           <Button
-            onClick={() => initWorkTime()}
+            onClick={() => (timerInitiated ? finishWork() : initWorkTime())}
             title={`${timerInitiated ? 'Marcar saída' : 'Iniciar Horário'}`}
             icon={
               timerInitiated ? (

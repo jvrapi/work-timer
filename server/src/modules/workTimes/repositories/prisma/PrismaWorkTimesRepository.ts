@@ -1,5 +1,5 @@
 import { prisma } from "../../../../prisma";
-import { InitWorkTime, WorkTime, WorkTimeInitiated, WorkTimesRepository } from "../WorkTimesRepository";
+import { InitWorkTime, UpdateWorkTime, WorkTime, WorkTimeFinished, WorkTimeInitiated, WorkTimesRepository } from "../WorkTimesRepository";
 
 
 export class PrismaWorkTimesRepository implements WorkTimesRepository{
@@ -29,6 +29,26 @@ export class PrismaWorkTimesRepository implements WorkTimesRepository{
         {finishedAt: 'asc'}
       ]
 
+    })
+  }
+
+  async getLastWorkTime(): Promise<WorkTime> {
+    const currentDate = new Date().toISOString().split('T')[0]
+    const currentDateFormatted = `%${currentDate}%`
+    console.log(currentDateFormatted)
+    const [result]= await prisma.$queryRaw<WorkTime[]>`SELECT * FROM work_times WHERE started_at LIKE ${currentDateFormatted} AND finished_at IS NULL`
+    return result
+  }
+
+  async update(data: UpdateWorkTime): Promise<WorkTimeFinished> {
+    return await prisma.workTimes.update({
+      where: {
+        id: data.id
+      },
+      data,
+      select: {
+        id: true
+      }
     })
   }
 

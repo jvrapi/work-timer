@@ -2,11 +2,13 @@ import { io } from 'socket.io-client';
 
 const socket = io('http://localhost:3333/');
 
-interface WorkTimesCreated {
+interface WorkTimeCreated {
   id: string;
 }
 
-export type WorkTime = WorkTimesCreated & {
+type WorkTimeFinished = WorkTimeCreated;
+
+export type WorkTime = WorkTimeCreated & {
   finishedAt?: string;
   startedAt: string;
 };
@@ -17,7 +19,7 @@ export const createWorkTime = (): Promise<string> => {
       milliseconds: Date.now(),
     });
 
-    socket.on('workTimeCreated', ({ id }: WorkTimesCreated) => {
+    socket.on('workTimeCreated', ({ id }: WorkTimeCreated) => {
       if (id) {
         resolve('Novo horário criado com sucesso');
       } else {
@@ -26,6 +28,21 @@ export const createWorkTime = (): Promise<string> => {
     });
   });
 };
+
+export function finishWorkTime(): Promise<string> {
+  return new Promise((resolve, reject) => {
+    socket.emit('finishWorkTime', {
+      milliseconds: Date.now(),
+    });
+    socket.on('workTimeFinished', ({ id }: WorkTimeFinished) => {
+      if (id) {
+        resolve('Horário encerrado com sucesso');
+      } else {
+        reject('Erro ao tentar encerrar o horário');
+      }
+    });
+  });
+}
 
 export function getWorkTimesListByDate(): Promise<WorkTime[]> {
   return new Promise((resolve, reject) => {
