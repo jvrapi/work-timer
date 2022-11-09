@@ -16,9 +16,9 @@ services:
       - work_times_network
     
   
-  server:
+  api:
     build: ./server
-    container_name: server
+    container_name: api
     ports:
       - 3333:3333
       - 9229:9229
@@ -28,6 +28,8 @@ services:
       - database
     networks:
       - work_times_network
+    environment:
+      -  VIRTUAL_HOST=api.worktimes.localhost
  
   
   client:
@@ -38,19 +40,22 @@ services:
     volumes: 
       - ./client:/usr/app
     depends_on:
-      - server
+      - api
     networks:
       - work_times_network
     environment:
-      -  VIRTUAL_HOST=work-times.localhost
+      -  VIRTUAL_HOST=worktimes.localhost
 
-  nginx-proxy:
-    image: nginxproxy/nginx-proxy
+  nginx:
+    build: ./nginx
+    container_name: nginx
     ports:
-      - '80:80'
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
- 
+      - 80:80
+    networks:
+      - work_times_network
+    depends_on:
+      - client
+      - api
    
 
 volumes:
