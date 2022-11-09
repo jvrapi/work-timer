@@ -12,6 +12,8 @@ services:
     volumes:
       - db:/var/lib/mysql
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - work_times_network
     
   
   server:
@@ -24,9 +26,9 @@ services:
       - ./server:/usr/app
     depends_on:
       - database
-   
-    links:
-     - database
+    networks:
+      - work_times_network
+ 
   
   client:
     build: ./client
@@ -37,11 +39,25 @@ services:
       - ./client:/usr/app
     depends_on:
       - server
-    links:
-     - server
+    networks:
+      - work_times_network
+    environment:
+      -  VIRTUAL_HOST=work-times.localhost
+
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy
+    ports:
+      - '80:80'
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+ 
    
 
 volumes:
   db:
     driver: local
 
+networks:
+ work_times_network:
+    driver:
+      bridge
