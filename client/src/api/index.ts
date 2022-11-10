@@ -1,6 +1,9 @@
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:3333/');
+const {VITE_API_URL} = import.meta.env
+
+const socket = io(VITE_API_URL);
+
 
 interface WorkTimeCreated {
   id: string;
@@ -44,12 +47,12 @@ export function finishWorkTime(): Promise<string> {
   });
 }
 
-export function getWorkTimesListByDate(): Promise<WorkTime[]> {
+export function getWorkTimesListByDate(date: string): Promise<WorkTime[]> {
   return new Promise((resolve, reject) => {
-    socket.emit('getWorkTimesListByDay', {
-      date: new Date().toISOString().split('T')[0],
+    socket.emit('getWorkTimesListByDate', {
+      date
     });
-    socket.on('WorkTimesListByDay', (workTime: WorkTime[]) => {
+    socket.on('WorkTimesListByDate', (workTime: WorkTime[]) => {
       if (workTime) {
         resolve(workTime);
       } else {

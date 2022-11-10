@@ -1,6 +1,6 @@
 import { WorkTime, WorkTimesRepository } from "../../repositories/WorkTimesRepository";
 
-class GetWorkTimesByDayService {
+class GetWorkTimesByDateService {
   constructor(
     private workTimesRepository: WorkTimesRepository
   ) { }
@@ -9,5 +9,5 @@ class GetWorkTimesByDayService {
     return dates
    }
 }
-export { GetWorkTimesByDayService };
+export { GetWorkTimesByDateService };
 

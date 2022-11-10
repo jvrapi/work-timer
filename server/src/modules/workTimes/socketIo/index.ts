@@ -1,12 +1,12 @@
 import SocketIO from 'socket.io'
 import { finishWorkTime } from '../useCases/finishWorkTime'
-import { getWorkTimesListByDay } from '../useCases/getWorkTimesByDay'
+import { getWorkTimesListByDate } from '../useCases/getWorkTimesByDate'
 import { initWorkTime } from '../useCases/initWorkTime'
 import { listAllWorkTimes } from '../useCases/listAllWorkTimes'
 
 const registerWorkTimesHandlers = (socket: SocketIO.Socket) => {
   initWorkTime(socket)
-  getWorkTimesListByDay(socket)
+  getWorkTimesListByDate(socket)
   listAllWorkTimes(socket)
   finishWorkTime(socket)
 }

@@ -1,7 +1,8 @@
 import { StopCircle, Timer } from 'phosphor-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
-import { createWorkTime, finishWorkTime, getWorkTimesList, WorkTime } from '../../api';
+import { createWorkTime, finishWorkTime, getWorkTimesList, getWorkTimesListByDate, WorkTime } from '../../api';
 import { Button } from '../../components/Button';
 import { getDate, getDifferenceBetweenDates, getTime } from '../../utils/dayjs';
 
@@ -28,18 +29,14 @@ export function SchedulesRegister() {
 
   useEffect(() => {
     getWorkTimers();
-    verifyStorageStatus();
+    verifyTimerStatus();
   }, []);
 
-  function verifyStorageStatus() {
-    const timerInitiated = localStorage.getItem('timerInitiated');
-    setTimerInitiated(timerInitiated === 'true');
-  }
-
-  async function getWorkTimers() {
-    const workTimesList = await getWorkTimesList();
-    const dataFormatted = formatWorkTimeData(workTimesList);
-    setWorkTimeList(dataFormatted);
+  async function verifyTimerStatus() {
+    const currentDate = new Date().toISOString().split('T')[0]
+    const times = await getWorkTimesListByDate(currentDate)
+    const timerInitiated = !!times.find(time => !time.finishedAt)
+    setTimerInitiated(timerInitiated)
   }
 
   function formatWorkTimeData(workTimes: WorkTime[]): WorkTimeList[] {
@@ -96,21 +93,30 @@ export function SchedulesRegister() {
     return workTimeFormatted;
   }
 
+
+  async function getWorkTimers() {
+    const workTimesList = await getWorkTimesList();
+    const dataFormatted = formatWorkTimeData(workTimesList);
+    setWorkTimeList(dataFormatted);
+    
+  }
+
+ 
   async function initWorkTime() {
     const message = await createWorkTime();
     getWorkTimers();
-    setTimerInitiated(!timerInitiated);
-    localStorage.setItem('timerInitiated', String(!timerInitiated));
-    console.log(message);
+    verifyTimerStatus();
+    toast.success(message);
   }
 
   async function finishWork() {
     const message = await finishWorkTime();
     getWorkTimers();
-    setTimerInitiated(!timerInitiated);
-    localStorage.setItem('timerInitiated', String(!timerInitiated));
-    console.log(message);
+    verifyTimerStatus();
+    toast.success(message);
   }
+
+
 
   return (
     <div className="flex justify-center h-full w-full text-center flex-col bg-secondary p-6">
