@@ -215,7 +215,7 @@ export function SchedulesRegister() {
         </div>
       </div>
 
-      <div className="h-[500px] overflow-y-scroll  mt-5">
+      <div className="max-h-[420px] overflow-y-auto  mt-5">
         <table className=" bg-secondary table-auto overflow-x-scroll w-full max-h-96 bg-gray-900 rounded-lg text-textColor border-spacing-y-4 border-separate">
           <thead>
             <tr>
@@ -253,7 +253,7 @@ export function SchedulesRegister() {
         </table>
       </div>
       <Modal isOpen={modalIsOpen} onClose={onCloseModal}>
-        <div className="h-[300px] overflow-y-scroll">
+        <div className="max-h-[300px] overflow-y-auto">
           <table className="table-auto w-full bg-gray-900 rounded-lg mt-10 text-textColor border-spacing-y-4 border-separate">
             <thead>
               <tr>

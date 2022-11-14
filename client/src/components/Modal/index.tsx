@@ -26,7 +26,7 @@ export function Modal({ isOpen, children, onClose }: ModalProps) {
         role="presentation"
         className="flex flex-col max-w-6xl w-full fixed top-[35%] left-[27%]  bg-secondary shadow-custom rounded p-1.5"
       >
-        <button onClick={onClose} className="fixed self-end mr-4">
+        <button onClick={onClose} className="fixed self-end mr-8 mt-2">
           <X size={25} />
         </button>
         {children}
