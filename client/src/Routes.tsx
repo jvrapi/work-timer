@@ -6,12 +6,12 @@ import { SchedulesRegister } from './pages/work-times';
 
 export function Routes() {
   return (
-    <div className="p-7 h-screen w-screen">
+    <main className="h-screen w-screen">
       <DomRoutes>
         <Route path="/" element={<Home />} />
         <Route path="*" element={<NotFound />} />
         <Route path="schedules-register" element={<SchedulesRegister />} />
       </DomRoutes>
-    </div>
+    </main>
   );
 }

@@ -1,13 +1,26 @@
-import { StopCircle, Timer } from 'phosphor-react';
+import { Clock, StopCircle, Timer } from 'phosphor-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { createWorkTime, finishWorkTime, getWorkTimesList, getWorkTimesListByDate, WorkTime } from '../../api';
+import {
+  createWorkTime,
+  finishWorkTime,
+  getWorkTimesList,
+  getWorkTimesListByDate,
+  WorkTime,
+} from '../../api';
 import { Button } from '../../components/Button';
-import { getDate, getDifferenceBetweenDates, getTime } from '../../utils/dayjs';
+import { Modal } from '../../components/Modal';
+import {
+  getBrazilianDate,
+  getDate,
+  getDifferenceBetweenDates,
+  getTime,
+} from '../../utils/dayjs';
 
 interface WorkTimeList {
   date: string;
+  brazilianDate: string;
   time: string;
   timeWorked: string;
 }
@@ -18,14 +31,33 @@ interface Time {
   finishedAt?: string;
   finishedAtFormatted?: string;
 }
+
 interface DateTimeFormatted {
   date: string;
+  brazilianDate: string;
   time: Time[];
+}
+
+interface WorkTimeByDateData {
+  id: string;
+  startedAt: string;
+  finishedAt: string;
+  timeWorked: string;
+}
+
+interface WorkTimeByDate {
+  totalWorked: string;
+  data: WorkTimeByDateData[];
 }
 
 export function SchedulesRegister() {
   const [timerInitiated, setTimerInitiated] = useState(false);
   const [workTimeList, setWorkTimeList] = useState<WorkTimeList[]>([]);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [workTimeByDate, setWorkTimeByDate] = useState<WorkTimeByDate>({
+    totalWorked: '',
+    data: [],
+  });
 
   useEffect(() => {
     getWorkTimers();
@@ -33,10 +65,78 @@ export function SchedulesRegister() {
   }, []);
 
   async function verifyTimerStatus() {
-    const currentDate = new Date().toISOString().split('T')[0]
-    const times = await getWorkTimesListByDate(currentDate)
-    const timerInitiated = !!times.find(time => !time.finishedAt)
-    setTimerInitiated(timerInitiated)
+    const currentDate = new Date().toISOString().split('T')[0];
+    const times = await getWorkTimesListByDate(currentDate);
+    const timerInitiated = !!times.find((time) => !time.finishedAt);
+    setTimerInitiated(timerInitiated);
+  }
+
+  async function getWorkTimers() {
+    const workTimesList = await getWorkTimesList();
+    const dataFormatted = formatWorkTimeData(workTimesList);
+    setWorkTimeList(dataFormatted);
+  }
+
+  async function initWorkTime() {
+    const message = await createWorkTime();
+    getWorkTimers();
+    verifyTimerStatus();
+    toast.success(message);
+  }
+
+  async function finishWork() {
+    const message = await finishWorkTime();
+    getWorkTimers();
+    verifyTimerStatus();
+    toast.success(message);
+  }
+
+  async function showWorkTimesByDate(date: string) {
+    const workTimeListByDate = await getWorkTimesListByDate(date);
+    let totalInMinutes = 0;
+    const workTimeListByDateFormatted = workTimeListByDate.map((workTime) => {
+      const { id, startedAt, finishedAt } = workTime;
+
+      const startedAtFormatted = `${getBrazilianDate(startedAt)} às ${getTime(
+        startedAt,
+      )}`;
+
+      let finishedAtFormatted = '-';
+      let timeWorked = 'Horário não finalizado';
+
+      if (finishedAt) {
+        finishedAtFormatted = `${getBrazilianDate(finishedAt)} às ${getTime(finishedAt)}`;
+        const diffInMinutes = getDifferenceBetweenDates(startedAt, finishedAt);
+        totalInMinutes += diffInMinutes;
+        const hours = Math.floor(diffInMinutes / 60);
+        const minutes = diffInMinutes % 60;
+        timeWorked = `${hours} Horas e ${minutes} minutos`;
+      }
+
+      const dataFormatted: WorkTimeByDateData = {
+        id: id,
+        timeWorked,
+        startedAt: startedAtFormatted,
+        finishedAt: finishedAtFormatted,
+      };
+
+      return dataFormatted;
+    });
+
+    const hours = Math.floor(totalInMinutes / 60);
+    const minutes = totalInMinutes % 60;
+    const totalWorked = `${hours} Horas e ${minutes} minutos`;
+
+    const workTimeByDate = {
+      totalWorked,
+      data: workTimeListByDateFormatted,
+    };
+    setWorkTimeByDate(workTimeByDate);
+    setModalIsOpen(true);
+  }
+
+  function onCloseModal() {
+    setModalIsOpen(false);
   }
 
   function formatWorkTimeData(workTimes: WorkTime[]): WorkTimeList[] {
@@ -44,6 +144,7 @@ export function SchedulesRegister() {
     const dateTimeFormatted: DateTimeFormatted[] = [];
 
     workTimes.forEach((workTime) => {
+      const brazilianDate = getBrazilianDate(workTime.startedAt);
       const date = getDate(workTime.startedAt);
       const startedAtFormatted = getTime(workTime.startedAt);
       const finishedAtFormatted = workTime.finishedAt ? getTime(workTime.finishedAt) : '';
@@ -52,6 +153,7 @@ export function SchedulesRegister() {
         finishedAt: workTime.finishedAt,
         finishedAtFormatted,
         startedAtFormatted,
+        brazilianDate,
       };
       const dateIndex = dateTimeFormatted.findIndex(
         (dateTimeFormatted) => dateTimeFormatted.date === date,
@@ -60,12 +162,13 @@ export function SchedulesRegister() {
       if (dateIndex !== -1) {
         dateTimeFormatted[dateIndex].time.push(time);
       } else {
-        dateTimeFormatted.push({ date, time: [time] });
+        dateTimeFormatted.push({ date, brazilianDate, time: [time] });
       }
     });
 
     dateTimeFormatted.forEach((dateTime) => {
-      const date = dateTime.date;
+      const { date, brazilianDate } = dateTime;
+
       const time = `${dateTime.time[0].startedAtFormatted} - ${
         dateTime.time[dateTime.time.length - 1].finishedAtFormatted ?? ''
       }`;
@@ -85,6 +188,7 @@ export function SchedulesRegister() {
 
       workTimeFormatted.push({
         date,
+        brazilianDate,
         time,
         timeWorked: `${hours} Horas e ${minutes} minutos`,
       });
@@ -93,33 +197,8 @@ export function SchedulesRegister() {
     return workTimeFormatted;
   }
 
-
-  async function getWorkTimers() {
-    const workTimesList = await getWorkTimesList();
-    const dataFormatted = formatWorkTimeData(workTimesList);
-    setWorkTimeList(dataFormatted);
-    
-  }
-
- 
-  async function initWorkTime() {
-    const message = await createWorkTime();
-    getWorkTimers();
-    verifyTimerStatus();
-    toast.success(message);
-  }
-
-  async function finishWork() {
-    const message = await finishWorkTime();
-    getWorkTimers();
-    verifyTimerStatus();
-    toast.success(message);
-  }
-
-
-
   return (
-    <div className="flex justify-center h-full w-full text-center flex-col bg-secondary p-6">
+    <div className="flex justify-center h-full w-full text-center flex-col p-6">
       <div className="self-end flex">
         <div className="mr-2">
           <Button
@@ -136,24 +215,75 @@ export function SchedulesRegister() {
         </div>
       </div>
 
-      <table className="table-auto w-full bg-gray-900 rounded-lg mt-10 text-textColor">
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Horário</th>
-            <th>Horas trabalhadas</th>
-          </tr>
-        </thead>
-        <tbody>
-          {workTimeList.map((workTime, index) => (
-            <tr key={index} className="hover:bg-secondaryHover">
-              <td>{workTime.date}</td>
-              <td>{workTime.time}</td>
-              <td>{workTime.timeWorked}</td>
+      <div className="h-[500px] overflow-y-scroll  mt-5">
+        <table className=" bg-secondary table-auto overflow-x-scroll w-full max-h-96 bg-gray-900 rounded-lg text-textColor border-spacing-y-4 border-separate">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Horário</th>
+              <th>Horas trabalhadas</th>
+              <th>Horários</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {workTimeList.map((workTime, index) => (
+              <tr key={index} className="hover:bg-secondaryHover">
+                <td title={`Dia de trabalho: ${workTime.brazilianDate}`}>
+                  {workTime.brazilianDate}
+                </td>
+                <td
+                  title={`Primeiro e último horário registrados no dia ${workTime.brazilianDate}`}
+                >
+                  {workTime.time}
+                </td>
+                <td title={`Horas trabalhadas no dia ${workTime.brazilianDate}`}>
+                  {workTime.timeWorked}
+                </td>
+                <td>
+                  <button
+                    title={`Clique aqui para ver todos os horários do dia ${workTime.brazilianDate}`}
+                    onClick={() => showWorkTimesByDate(workTime.date)}
+                  >
+                    <Clock size={30} />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <Modal isOpen={modalIsOpen} onClose={onCloseModal}>
+        <div className="h-[300px] overflow-y-scroll">
+          <table className="table-auto w-full bg-gray-900 rounded-lg mt-10 text-textColor border-spacing-y-4 border-separate">
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Inicio</th>
+                <th>Termino</th>
+                <th>Quantidade de horas</th>
+              </tr>
+            </thead>
+            <tbody className="cursor-default ">
+              {workTimeByDate.data.map((workTime, index) => (
+                <tr key={index} className="hover:bg-secondaryHover">
+                  <td title="Id">{workTime.id}</td>
+                  <td title="Inicio">{workTime.startedAt}</td>
+                  <td title="Termino">{workTime.finishedAt}</td>
+                  <td title="Quantidade de horas">{workTime.timeWorked}</td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr className="hover:bg-secondaryHover ">
+                <td></td>
+                <td></td>
+                <td>Total</td>
+                <td>{workTimeByDate.totalWorked}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </Modal>
     </div>
   );
 }

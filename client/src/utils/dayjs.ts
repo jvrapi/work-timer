@@ -1,6 +1,10 @@
 import dayJs from 'dayjs';
-export function getDate(date: string): string {
+export function getBrazilianDate(date: string): string {
   return dayJs(date).format('DD/MM/YYYY');
+}
+
+export function getDate(date: string): string {
+  return dayJs(date).format('YYYY-MM-DD');
 }
 
 export function getTime(date: string): string {

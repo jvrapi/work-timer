@@ -11,3 +11,9 @@ body{
   font-family: 'Poppins', sans-serif;
   color: #9FB3C8
 }
+
+* {
+  margin: 0; 
+  padding: 0; 
+  box-sizing: border-box;
+}

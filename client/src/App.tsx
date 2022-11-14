@@ -3,10 +3,10 @@ import { Routes } from './Routes';
 
 function App() {
   return (
-    <div className="flex">
+    <main className="flex">
       <Sidebar />
       <Routes />
-    </div>
+    </main>
   );
 }
 
