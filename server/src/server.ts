@@ -1,19 +1,22 @@
-import SocketIO from 'socket.io'
+import http from 'http'
 import { app } from './app'
-import { onConnection } from './socket.io'
-
 const PORT = process.env.PORT || 3333
 
-const httpServer = app.listen(PORT, () => console.log(`Server is running on port ${PORT} 🔥`))
+
+
+const httpServer = http.createServer(app)
+
+
+httpServer.listen(PORT, () => console.log(`Server is running on port ${PORT} 🔥`))
 
 
 
-const io = new SocketIO.Server(httpServer, {
-  cors: {
-    origin: '*'
-  }
-})
+// const io = new SocketIO.Server(httpServer, {
+//   cors: {
+//     origin: '*'
+//   }
+// })
 
 
-io.on('connection',onConnection)
+// io.on('connection',onConnection)
 
