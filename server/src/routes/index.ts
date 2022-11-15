@@ -1,17 +1,8 @@
 import { Router } from 'express'
+import { workTimeRoutes } from './work.time.routes'
 
 const routes = Router()
 
-routes.post('/auth', (request, response) => {
-   response.json({
-    message: 'authenticated'
-  })
-})
-
-
-routes.get('/', (request, response) => {
-  console.log('aqui')
-  response.status(200).send()
-})
+routes.use('/work-time', workTimeRoutes)
 
 export { routes }

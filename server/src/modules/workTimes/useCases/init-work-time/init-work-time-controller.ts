@@ -21,7 +21,7 @@ class InitWorkTimeController {
       milliseconds
     )
 
-    return response.json(workTimerCreated)
+    return response.status(201).json(workTimerCreated)
   }
 
 
