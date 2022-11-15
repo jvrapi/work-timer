@@ -1,6 +1,6 @@
 node_modules
 .env
-.env.test
+.env.testing
 dist
 uploads
 docker-compose
