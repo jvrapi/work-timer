@@ -1,4 +1,4 @@
-import SocketIO from 'socket.io'
+import { Request, Response } from 'express'
 import { InitWorkTimeService } from './InitWorkTimeService'
 
 interface InitWorkTimeProps {
@@ -9,20 +9,19 @@ class InitWorkTimeController {
 
   constructor(
     private createWorkTimerService: InitWorkTimeService,
-    private socket:  SocketIO.Socket
 
   ){
   }
 
-  async handle(){
-    this.socket.on("createWorkTime", async ({milliseconds}: InitWorkTimeProps) => {
+  async handle(request: Request, response: Response){
+    const {milliseconds} = request.body
 
-      const workTimerCreated = await this.createWorkTimerService.execute(
-        milliseconds
-      )
+    
+    const workTimerCreated = await this.createWorkTimerService.execute(
+      milliseconds
+    )
 
-      this.socket.emit("workTimeCreated", workTimerCreated)
-   })
+    return response.json(workTimerCreated)
   }
 
 
