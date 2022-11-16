@@ -1,8 +1,8 @@
 import { Socket } from 'socket.io'
 import { DayJsDateProvider } from '../../providers/dayJs/DayJsDateProvider'
 import { PrismaWorkTimesRepository } from '../../repositories/prisma/PrismaWorkTimesRepository'
-import { FinishWorkTimeController } from './FinishWorkTimeController'
-import { FinishWorkTimeService } from './FinishWorkTimeService'
+import { FinishWorkTimeController } from './finish-work-time-controller'
+import { FinishWorkTimeService } from './finish-work-time-service'
 
 const finishWorkTime = (socket: Socket)=> {
   const repository = new PrismaWorkTimesRepository()

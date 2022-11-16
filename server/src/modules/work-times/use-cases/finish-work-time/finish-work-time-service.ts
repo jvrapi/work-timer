@@ -1,5 +1,5 @@
-import { DateProvider } from "../../providers/DateProvider";
-import { WorkTimeFinished, WorkTimesRepository } from "../../repositories/WorkTimesRepository";
+import { DateProvider } from "../../providers/date-provider";
+import { WorkTimeFinished, WorkTimesRepository } from "../../repositories/work-times-repository";
 
 
 

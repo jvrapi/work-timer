@@ -1,6 +1,6 @@
-import dayJs from 'dayjs'
-import { DateProvider } from '../DateProvider'
+import dayJs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import { DateProvider } from '../date-provider';
 
 
 dayJs.extend(utc);

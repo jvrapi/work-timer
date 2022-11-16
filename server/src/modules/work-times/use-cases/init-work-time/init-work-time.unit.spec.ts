@@ -1,7 +1,7 @@
 import { DateProvider } from "../../providers/DateProvider"
 import { DayJsDateProvider } from "../../providers/dayJs/DayJsDateProvider"
-import { TestWorkTimesRepository } from "../../repositories/test/TestWorkTimesRepository"
-import { InitWorkTimeService } from "./InitWorkTimeService"
+import { TestWorkTimesRepository } from "../../repositories/test/test-work-times-repository"
+import { InitWorkTimeService } from "./init-work-time-service"
 
 describe('Init Work Service', () => {
 

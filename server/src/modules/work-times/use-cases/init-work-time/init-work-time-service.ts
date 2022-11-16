@@ -1,5 +1,5 @@
-import { DateProvider } from "../../providers/DateProvider"
-import { WorkTimesRepository } from "../../repositories/WorkTimesRepository"
+import { DateProvider } from "../../providers/date-provider"
+import { WorkTimesRepository } from "../../repositories/work-times-repository"
 
 
 interface CreatedSchedule {

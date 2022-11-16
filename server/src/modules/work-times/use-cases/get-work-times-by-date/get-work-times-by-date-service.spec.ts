@@ -1,5 +1,5 @@
-import { TestWorkTimesRepository } from "../../repositories/test/TestWorkTimesRepository"
-import { GetWorkTimesByDateService } from "./GetWorkTimesByDateService"
+import { TestWorkTimesRepository } from "../../repositories/test/test-work-times-repository"
+import { GetWorkTimesByDateService } from "./Get-Work-Times-By-Date-Service"
 
 describe('Get work times by date service', ()=> {
   let getWorkTimesByDateService: GetWorkTimesByDateService

@@ -1,5 +1,5 @@
 import { prisma } from "../../../../prisma";
-import { InitWorkTime, UpdateWorkTime, WorkTime, WorkTimeFinished, WorkTimeInitiated, WorkTimesRepository } from "../WorkTimesRepository";
+import { InitWorkTime, UpdateWorkTime, WorkTime, WorkTimeFinished, WorkTimeInitiated, WorkTimesRepository } from "../work-times-repository";
 
 interface RawResponse{
   id: string

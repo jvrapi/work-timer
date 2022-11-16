@@ -1,4 +1,4 @@
-import { WorkTime, WorkTimesRepository } from "../../repositories/WorkTimesRepository";
+import { WorkTime, WorkTimesRepository } from "../../repositories/work-times-repository";
 
 class GetWorkTimesByDateService {
   constructor(

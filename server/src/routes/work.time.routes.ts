@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { initWorkTime } from '../modules/workTimes/useCases/init-work-time'
+import { initWorkTime } from '../modules/work-times/use-cases/init-work-time'
 
 const workTimeRoutes = Router()
 
