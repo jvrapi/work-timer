@@ -3,6 +3,6 @@ import { workTimeRoutes } from './work.time.routes'
 
 const routes = Router()
 
-routes.use('/work-time', workTimeRoutes)
+routes.use('/work-times', workTimeRoutes)
 
 export { routes }

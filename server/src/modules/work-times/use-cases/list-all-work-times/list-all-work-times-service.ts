@@ -1,9 +1,14 @@
-import { WorkTime, WorkTimesRepository } from "../../repositories/WorkTimesRepository";
+import { WorkTime, WorkTimesRepository } from "../../repositories/work-times-repository";
+
+interface Filters {
+  date: string
+}
+
 
 class ListAllWorkTimesService {
   constructor(private workTimersRepository: WorkTimesRepository) { }
-  async execute(): Promise<WorkTime[]> {
-    return this.workTimersRepository.listAll()
+  async execute({date}: Filters): Promise<WorkTime[]> {
+    return this.workTimersRepository.listAll({date})
   }
 }
 export { ListAllWorkTimesService };

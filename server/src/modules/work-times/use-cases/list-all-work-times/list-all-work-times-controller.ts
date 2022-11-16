@@ -1,12 +1,11 @@
-import { Socket } from 'socket.io'
-import { ListAllWorkTimesService } from './ListAllWorkTimesService'
+import { Request, Response } from 'express'
+import { ListAllWorkTimesService } from './list-all-work-times-service'
 class ListAllWorkTimesController {
-  constructor(private listAllWorkTimesService: ListAllWorkTimesService, private socket: Socket){}
-  async handle(){
-    this.socket.on('listAllWorkTimes', async()=> {
-      const workTimes = await this.listAllWorkTimesService.execute()
-      this.socket.emit('allWorkTimes', workTimes)
-    })
+  constructor(private listAllWorkTimesService: ListAllWorkTimesService){}
+  async handle(request: Request, response: Response){
+    const date = request.query.date as string
+    const workTimes = await this.listAllWorkTimesService.execute({date})
+    return response.json(workTimes)
   }
 }
 export { ListAllWorkTimesController }

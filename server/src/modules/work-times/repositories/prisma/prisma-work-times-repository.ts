@@ -1,5 +1,6 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "../../../../prisma";
-import { InitWorkTime, UpdateWorkTime, WorkTime, WorkTimeFinished, WorkTimeInitiated, WorkTimesRepository } from "../work-times-repository";
+import { InitWorkTime, ListAllWorkTimesFilters, UpdateWorkTime, WorkTime, WorkTimeFinished, WorkTimeInitiated, WorkTimesRepository } from "../work-times-repository";
 
 interface RawResponse{
   id: string
@@ -36,14 +37,34 @@ export class PrismaWorkTimesRepository implements WorkTimesRepository{
     )
   }
 
-  listAll(): Promise<WorkTime[]> {
-    return prisma.workTimes.findMany({
-      orderBy:[
-        {startedAt: 'asc'},
-        {finishedAt: 'asc'}
-      ]
+  async listAll({date}: ListAllWorkTimesFilters): Promise<WorkTime[]> {
 
-    })
+    const hasFilter = !!date?.length
+
+    let whereArgs:  Prisma.Sql[] = []
+    
+    if(hasFilter){
+      if(date){
+        whereArgs.push(Prisma.sql`WHERE DATE(started_at) = ${date}`)
+      }
+    }
+
+
+    const where = whereArgs.length ? Prisma.join(whereArgs, ' AND') : Prisma.empty
+
+    
+    const result = await prisma.$queryRaw<WorkTime[]>`
+      SELECT 
+        id AS id,
+        started_at AS startedAt,
+        finished_at AS finishedAt
+      FROM work_times
+      ${where}
+      ORDER BY started_at ASC, finished_at ASC
+    `
+
+
+    return result
   }
 
   async getLastWorkTime(): Promise<WorkTime> {
