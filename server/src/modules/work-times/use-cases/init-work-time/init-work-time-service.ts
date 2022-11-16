@@ -12,13 +12,12 @@ class InitWorkTimeService {
     private workTimesRepository: WorkTimesRepository,
     private dateProvider: DateProvider
   ) { }
-  async execute(dateInMilliseconds: number): Promise<CreatedSchedule> {
+  async execute(dateInMilliseconds: number): Promise<void> {
 
     const startedAt = this.dateProvider.millisecondsToUtcDate(dateInMilliseconds)
 
     try {
-      const schedule = await this.workTimesRepository.initWorkTime({startedAt})
-      return schedule
+      await this.workTimesRepository.initWorkTime({startedAt})
     } catch (error) {
       console.log(error)
       throw new Error('Erro ao tentar salvar um novo horário')

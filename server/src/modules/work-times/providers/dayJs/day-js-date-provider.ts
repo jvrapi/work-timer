@@ -8,8 +8,8 @@ dayJs.extend(utc);
 export class DayJsDateProvider implements DateProvider {
 
 
-  millisecondsToUtcDate(milliseconds: number): string {
-    return dayJs(milliseconds).utc().local().format()
+  millisecondsToUtcDate(milliseconds: number): Date {
+    return dayJs(milliseconds).utc().local().toDate()
   }
 
 }

@@ -1,3 +1,3 @@
 export interface DateProvider {
-  millisecondsToUtcDate(milliseconds: number): string
+  millisecondsToUtcDate(milliseconds: number): Date
 }

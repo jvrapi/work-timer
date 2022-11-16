@@ -1,5 +1,5 @@
 export interface InitWorkTime {
-  startedAt: string
+  startedAt: Date
 }
 
 export interface WorkTimeInitiated{

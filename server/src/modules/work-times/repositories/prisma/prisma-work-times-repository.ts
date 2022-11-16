@@ -30,7 +30,7 @@ export class PrismaWorkTimesRepository implements WorkTimesRepository{
           startedAt
         },
         select: {
-          id: true,
+          id: true
         }
       }
     )

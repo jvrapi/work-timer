@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import { DayJsDateProvider } from '../../providers/dayJs/DayJsDateProvider'
-import { PrismaWorkTimesRepository } from '../../repositories/prisma/PrismaWorkTimesRepository'
+import { DayJsDateProvider } from '../../providers/dayJs/day-js-date-provider'
+import { PrismaWorkTimesRepository } from '../../repositories/prisma/prisma-work-times-repository'
 import { InitWorkTimeController } from './init-work-time-controller'
 import { InitWorkTimeService } from './init-work-time-service'
 
