@@ -1,21 +1,13 @@
+import { WorkTime } from "@prisma/client"
+
 export interface InitWorkTime {
   startedAt: Date
 }
 
-export interface WorkTimeInitiated{
-  id: string
-}
-
-export type  WorkTimeFinished = WorkTimeInitiated
-
-export type WorkTime = WorkTimeInitiated & {
-  finishedAt: Date | null
-  startedAt: Date
-}
 
 export interface UpdateWorkTime{
   id: string
-  finishedAt: string
+  finishedAt: Date
   startedAt: Date
 }
 
@@ -23,12 +15,16 @@ export interface ListAllWorkTimesFilters {
   date?: string
 }
 
+export interface WorkTimeSaved {
+  id: string
+}
+
 export interface WorkTimesRepository{
-  initWorkTime(data: InitWorkTime): Promise<WorkTimeInitiated>
-  getByDate(date: string): Promise<WorkTime[]>
+  initWorkTime(data: InitWorkTime): Promise<WorkTimeSaved>
   listAll(filters: ListAllWorkTimesFilters): Promise<WorkTime[]>
   getLastWorkTime(): Promise<WorkTime>
-  update(data: UpdateWorkTime): Promise<WorkTimeFinished>
+  update(data: UpdateWorkTime): Promise<WorkTimeSaved>
+  findById(id: string): Promise<WorkTime | null>
 }
 
 

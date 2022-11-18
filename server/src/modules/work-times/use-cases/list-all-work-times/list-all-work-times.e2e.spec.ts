@@ -1,6 +1,7 @@
+import { WorkTime } from '@prisma/client'
 import request from 'supertest'
 import { app } from '../../../../app'
-import { WorkTime } from '../../repositories/work-times-repository'
+
 
 describe('[e2e] List all work times', () => {
 

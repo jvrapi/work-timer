@@ -1,5 +1,5 @@
 import { DateProvider } from "../../providers/date-provider";
-import { WorkTimeFinished, WorkTimesRepository } from "../../repositories/work-times-repository";
+import { WorkTimeSaved, WorkTimesRepository } from "../../repositories/work-times-repository";
 
 
 
@@ -9,7 +9,7 @@ class FinishWorkTimeService {
     private workTimesRepository: WorkTimesRepository,
     private dateProvider: DateProvider
   ) { }
-  async execute(dateInMilliseconds: number): Promise<WorkTimeFinished> {
+  async execute(dateInMilliseconds: number): Promise<WorkTimeSaved> {
     const finishedAt = this.dateProvider.millisecondsToUtcDate(dateInMilliseconds)
     const {id,startedAt} = await this.workTimesRepository.getLastWorkTime()
 

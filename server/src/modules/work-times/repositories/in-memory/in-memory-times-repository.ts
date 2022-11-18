@@ -1,12 +1,13 @@
+import { WorkTime } from '@prisma/client';
 import crypto from 'node:crypto';
-import { InitWorkTime, ListAllWorkTimesFilters, UpdateWorkTime, WorkTime, WorkTimeInitiated, WorkTimesRepository } from "../work-times-repository";
+import { InitWorkTime, ListAllWorkTimesFilters, UpdateWorkTime, WorkTimeSaved, WorkTimesRepository } from "../work-times-repository";
 
 export class InMemoryTimesRepository implements WorkTimesRepository{
   private workTimes: WorkTime[] = []
   
   async initWorkTime({
     startedAt
-  }: InitWorkTime): Promise<WorkTimeInitiated> {
+  }: InitWorkTime): Promise<WorkTimeSaved> {
     const newWorkTime = {
       finishedAt: null,
       startedAt,
@@ -18,24 +19,36 @@ export class InMemoryTimesRepository implements WorkTimesRepository{
       id: newWorkTime.id
     }
   }
-  getByDate(date: string): Promise<WorkTime[]> {
-    throw new Error("Method not implemented.");
-  }
+
   async listAll({date}: ListAllWorkTimesFilters): Promise<WorkTime[]> {
     let workTimes: WorkTime[] = this.workTimes
 
     if(date){
-      console.log(date)
       workTimes = workTimes.filter(workTime => workTime.startedAt.toISOString().includes(date))
     }
 
     return workTimes
   }
-  getLastWorkTime(): Promise<WorkTime> {
-    throw new Error("Method not implemented.");
+  async getLastWorkTime(): Promise<WorkTime> {
+    return this.workTimes.find(workTime => !workTime.finishedAt) as WorkTime
   }
-  update(data: UpdateWorkTime): Promise<WorkTimeInitiated> {
-    throw new Error("Method not implemented.");
+  
+  async update(data: UpdateWorkTime): Promise<WorkTimeSaved> {
+    const workTimeIndex = this.workTimes.findIndex(workTime => workTime.id === data.id)
+    this.workTimes[workTimeIndex] = data
+    return {
+      id: this.workTimes[workTimeIndex].id
+    }
+  }
+
+  async findById(id: string): Promise<WorkTime | null> {
+    const workTime = this.workTimes.find(workTime => workTime.id === id)
+
+    if(workTime){
+      return workTime
+    }
+
+    return null
   }
 
 }

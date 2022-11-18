@@ -1,6 +1,6 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, WorkTime } from "@prisma/client";
 import { prisma } from "../../../../prisma";
-import { InitWorkTime, ListAllWorkTimesFilters, UpdateWorkTime, WorkTime, WorkTimeFinished, WorkTimeInitiated, WorkTimesRepository } from "../work-times-repository";
+import { InitWorkTime, ListAllWorkTimesFilters, UpdateWorkTime, WorkTimeSaved, WorkTimesRepository } from "../work-times-repository";
 
 interface RawResponse{
   id: string
@@ -24,8 +24,8 @@ export class PrismaWorkTimesRepository implements WorkTimesRepository{
     return timesFormatted
   }
 
-  initWorkTime({startedAt}: InitWorkTime): Promise<WorkTimeInitiated> {
-    return prisma.workTimes.create(
+  initWorkTime({startedAt}: InitWorkTime): Promise<WorkTimeSaved> {
+    return prisma.workTime.create(
       {
         data:{
           startedAt
@@ -70,12 +70,20 @@ export class PrismaWorkTimesRepository implements WorkTimesRepository{
   async getLastWorkTime(): Promise<WorkTime> {
     const currentDate = new Date().toISOString().split('T')[0]
     const currentDateFormatted = `%${currentDate}%`
-    const [result]= await prisma.$queryRaw<WorkTime[]>`SELECT * FROM work_times WHERE started_at LIKE ${currentDateFormatted} AND finished_at IS NULL`
+    const [result]= await prisma.$queryRaw<WorkTime[]>`
+       SELECT 
+        id AS id,
+        started_at AS startedAt,
+        finished_at AS finishedAt
+      FROM work_times 
+      WHERE started_at LIKE ${currentDateFormatted} 
+        AND finished_at IS NULL
+    `
     return result
   }
 
-  async update(data: UpdateWorkTime): Promise<WorkTimeFinished> {
-    return await prisma.workTimes.update({
+  async update(data: UpdateWorkTime): Promise<WorkTimeSaved > {
+    return await prisma.workTime.update({
       where: {
         id: data.id
       },
@@ -84,6 +92,15 @@ export class PrismaWorkTimesRepository implements WorkTimesRepository{
         id: true
       }
     })
+  }
+
+  async findById(id: string): Promise<WorkTime | null> {
+    const workTime = await prisma.workTime.findUnique({
+      where: {
+        id
+      }
+    })
+    return workTime
   }
 
 

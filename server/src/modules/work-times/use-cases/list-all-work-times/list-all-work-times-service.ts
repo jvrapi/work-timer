@@ -1,4 +1,5 @@
-import { WorkTime, WorkTimesRepository } from "../../repositories/work-times-repository";
+import { WorkTime } from "@prisma/client";
+import { WorkTimesRepository } from "../../repositories/work-times-repository";
 
 interface Filters {
   date: string

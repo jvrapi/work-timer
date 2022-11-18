@@ -11,7 +11,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model WorkTimes {
+model WorkTime {
   id         String    @id @default(uuid())
   startedAt  DateTime  @map("started_at")
   finishedAt DateTime? @map("finished_at")

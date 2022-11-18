@@ -1,5 +1,5 @@
-import SocketIO from 'socket.io'
-import { FinishWorkTimeService } from './FinishWorkTimeService'
+import { Request, Response } from 'express'
+import { FinishWorkTimeService } from './finish-work-time-service'
 
 interface FinishWorkTimeProps{
   milliseconds:number
@@ -8,13 +8,11 @@ interface FinishWorkTimeProps{
 class FinishWorkTimeController {
   constructor(
     private finishWorkTimerService: FinishWorkTimeService,
-    private socket:  SocketIO.Socket
   ){}
-  async handle(){
-    this.socket.on('finishWorkTime', async ({milliseconds}: FinishWorkTimeProps)=> {
-      const workTimeFinished = await this.finishWorkTimerService.execute(milliseconds)
-      this.socket.emit('workTimeFinished', workTimeFinished)
-    })
+  async handle(request: Request, response: Response){
+    const {milliseconds} = request.body
+    const workTimeFinished = await this.finishWorkTimerService.execute(milliseconds)
+    response.json(workTimeFinished)
   }
 }
 export { FinishWorkTimeController }
