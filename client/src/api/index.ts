@@ -1,76 +1,71 @@
-import { io } from 'socket.io-client';
-
-const {VITE_API_URL} = import.meta.env
-
-const socket = io(VITE_API_URL);
-
+const { VITE_API_URL } = import.meta.env;
 
 interface WorkTimeCreated {
   id: string;
 }
-
-type WorkTimeFinished = WorkTimeCreated;
 
 export type WorkTime = WorkTimeCreated & {
   finishedAt?: string;
   startedAt: string;
 };
 
-export const createWorkTime = (): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    socket.emit('createWorkTime', {
-      milliseconds: Date.now(),
+export async function createWorkTime(): Promise<string> {
+  const body = {
+    milliseconds: Date.now(),
+  };
+  try {
+    await fetch(`${VITE_API_URL}/work-times/`, {
+      method: 'POST',
+      body: objectToString(body),
     });
-
-    socket.on('workTimeCreated', ({ id }: WorkTimeCreated) => {
-      if (id) {
-        resolve('Novo horário criado com sucesso');
-      } else {
-        reject('Erro ao tentar criar um novo horário');
-      }
-    });
-  });
-};
-
-export function finishWorkTime(): Promise<string> {
-  return new Promise((resolve, reject) => {
-    socket.emit('finishWorkTime', {
-      milliseconds: Date.now(),
-    });
-    socket.on('workTimeFinished', ({ id }: WorkTimeFinished) => {
-      if (id) {
-        resolve('Horário encerrado com sucesso');
-      } else {
-        reject('Erro ao tentar encerrar o horário');
-      }
-    });
-  });
+    return 'Novo horário criado com sucesso';
+  } catch {
+    return 'Erro ao tentar criar um novo horário';
+  }
 }
 
-export function getWorkTimesListByDate(date: string): Promise<WorkTime[]> {
-  return new Promise((resolve, reject) => {
-    socket.emit('getWorkTimesListByDate', {
-      date
+export async function finishWorkTime(): Promise<string> {
+  const body = {
+    milliseconds: Date.now(),
+  };
+
+  try {
+    await fetch(`${VITE_API_URL}/work-times/finish`, {
+      method: 'PATCH',
+      body: objectToString(body),
     });
-    socket.on('WorkTimesListByDate', (workTime: WorkTime[]) => {
-      if (workTime) {
-        resolve(workTime);
-      } else {
-        reject('Erro ao tentar recuperar a lista de horários');
-      }
-    });
-  });
+    return 'Horário encerrado com sucesso';
+  } catch {
+    return 'Erro ao tentar encerrar o horário';
+  }
 }
 
-export function getWorkTimesList(): Promise<WorkTime[]> {
-  return new Promise((resolve, reject) => {
-    socket.emit('listAllWorkTimes');
-    socket.on('allWorkTimes', (workTimes: WorkTime[]) => {
-      if (workTimes) {
-        resolve(workTimes);
-      } else {
-        reject('Erro ao tentar recuperar a lista de horários');
-      }
-    });
+export async function getWorkTimesListByDate(date: string): Promise<WorkTime[]> {
+  const queryParams = new URLSearchParams({
+    date,
   });
+  const getWorkTimesListByDateResponde = await fetch(
+    `${VITE_API_URL}/work-times?${queryParams}`,
+    {
+      method: 'GET',
+    },
+  );
+
+  const workTimesList = await getWorkTimesListByDateResponde.json();
+
+  return workTimesList;
+}
+
+export async function getWorkTimesList(): Promise<WorkTime[]> {
+  const getWorkTimesListResponde = await fetch(`${VITE_API_URL}/work-times`, {
+    method: 'GET',
+  });
+
+  const workTimesList = await getWorkTimesListResponde.json();
+
+  return workTimesList;
+}
+
+function objectToString(data: object): string {
+  return JSON.stringify(data);
 }
