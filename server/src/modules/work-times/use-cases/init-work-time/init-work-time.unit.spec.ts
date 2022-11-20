@@ -31,5 +31,24 @@ describe('Init Work Service', () => {
     expect(repositorySpy).toHaveBeenCalledWith({startedAt: dateSpyReturnValue})
   })
 
+  it('should not be able no init a new work time', async () => {
+    const currentTimestamp = Date.now()
+    const dateSpy = jest.spyOn(dateProvider, 'millisecondsToUtcDate')
+    
+    const repositorySpy = jest.spyOn(workTimesRepository, 'initWorkTime')
+
+    repositorySpy.mockRejectedValue('DATABASE ERROR')
+    
+    await expect(initWorkTimeService.execute(currentTimestamp)).rejects.toThrowError()
+
+    const dateSpyReturnValue = dateSpy.mock.results[0].value
+
+    expect(dateSpy).toHaveBeenCalledWith(currentTimestamp)
+
+    expect(repositorySpy).toHaveBeenCalledWith({startedAt: dateSpyReturnValue})
+
+
+  })
+
 
 })

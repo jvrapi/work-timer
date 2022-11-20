@@ -11,8 +11,13 @@ class FinishWorkTimeService {
   ) { }
   async execute(dateInMilliseconds: number): Promise<WorkTimeSaved> {
     const finishedAt = this.dateProvider.millisecondsToUtcDate(dateInMilliseconds)
-    const {id,startedAt} = await this.workTimesRepository.getLastWorkTime()
+    const workTime = await this.workTimesRepository.getLastWorkTime()
 
+    if(!workTime){
+      throw new Error('Work time not found')
+    }
+
+    const {id, startedAt} = workTime
     try {
       return await this.workTimesRepository.update({
         finishedAt,

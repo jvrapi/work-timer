@@ -54,4 +54,13 @@ describe('[unit] Finish work time', () => {
 
     expect(workTime?.finishedAt?.getTime()).toBe(finishedAt)
   })
+
+  it('should be able to finish a work time with invalid id', async () => {
+    const finishedAt = Date.now()
+    const lastWorkTimeSpy = jest.spyOn(workTimesRepository, 'getLastWorkTime')
+     await expect(finishWorkTimeService.execute(finishedAt)).rejects.toThrow()
+
+    expect(lastWorkTimeSpy).toHaveBeenCalled()
+
+  })
 })

@@ -1,4 +1,3 @@
-import { WorkTime } from '@prisma/client'
 import request from 'supertest'
 import { app } from '../../../../app'
 
@@ -6,21 +5,18 @@ import { app } from '../../../../app'
 describe('[e2e] Finish work time', () => {
 
   
-  let workTimeInitiated: WorkTime
 
 
-  beforeAll(async () => {
-    const {body} = await request(app)
+  
+  it('should be able to finish a work time', async () => {
+
+    await request(app)
     .post('/work-times')
     .send({
       milliseconds: Date.now()
     })
 
-    workTimeInitiated = body
-    
-  })
-  
-  it('should be able to finished a work time', async () => {
+
     const finishedAt = Date.now()
     
     const finishWorkTimeResponse = await request(app)
@@ -39,6 +35,18 @@ describe('[e2e] Finish work time', () => {
     expect(listAllWorkTimesResponse.body).toHaveLength(1)
     expect(listAllWorkTimesResponse.body[0].id).toEqual(finishWorkTimeResponse.body.id)
     expect(new Date(listAllWorkTimesResponse.body[0].finishedAt).getTime()).toEqual(finishedAt)
+  })
+
+  it('should not be able to finish a work time', async () => {
+    const finishedAt = Date.now()
+
+    const finishWorkTimeResponse = await request(app)
+    .patch('/work-times/finish')
+    .send({
+      milliseconds: finishedAt
+    })
+
+    expect(finishWorkTimeResponse.status).toBe(400)
   })
 
  

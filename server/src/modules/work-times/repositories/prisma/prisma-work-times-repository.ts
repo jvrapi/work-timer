@@ -2,27 +2,9 @@ import { Prisma, WorkTime } from "@prisma/client";
 import { prisma } from "../../../../prisma";
 import { InitWorkTime, ListAllWorkTimesFilters, UpdateWorkTime, WorkTimeSaved, WorkTimesRepository } from "../work-times-repository";
 
-interface RawResponse{
-  id: string
-  started_at: Date
-  finished_at: Date
-}
 
 export class PrismaWorkTimesRepository implements WorkTimesRepository{
-  async getByDate(date: string): Promise<WorkTime[]> {
-    const dateFormatted = `%${date}%`
-    const times=await prisma.$queryRaw<RawResponse[]>`SELECT * FROM work_times WHERE started_at LIKE ${dateFormatted} ORDER BY started_at ASC, finished_at ASC`
-    const timesFormatted: WorkTime[] = []
-    times.forEach(time => {
-      const timeFormatted = {
-        id: time.id,
-        finishedAt: time.finished_at,
-        startedAt:time.started_at
-      }
-      timesFormatted.push(timeFormatted)
-    })
-    return timesFormatted
-  }
+
 
   initWorkTime({startedAt}: InitWorkTime): Promise<WorkTimeSaved> {
     return prisma.workTime.create(
