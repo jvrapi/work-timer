@@ -4,10 +4,6 @@ import { app } from '../../../../app'
 
 describe('[e2e] Finish work time', () => {
 
-  
-
-
-  
   it('should be able to finish a work time', async () => {
 
     await request(app)

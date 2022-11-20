@@ -59,7 +59,6 @@ describe('[unit] Finish work time', () => {
     const finishedAt = Date.now()
     const lastWorkTimeSpy = jest.spyOn(workTimesRepository, 'getLastWorkTime')
      await expect(finishWorkTimeService.execute(finishedAt)).rejects.toThrow()
-
     expect(lastWorkTimeSpy).toHaveBeenCalled()
 
   })

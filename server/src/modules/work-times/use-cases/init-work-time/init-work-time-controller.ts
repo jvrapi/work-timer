@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { InitWorkTimeService } from './InitWorkTimeService'
+import { InitWorkTimeService } from './init-work-time-service'
 
 interface InitWorkTimeProps {
   milliseconds: number
